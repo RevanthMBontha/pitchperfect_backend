@@ -34,10 +34,19 @@ def scrape(session, url):
             logging.warning("Failed to parse Walmart's JSON data blob.")
 
     # --- Data Extraction Functions ---
-
+    def preprocess_string(text):
+        """
+        Removes leading, trailing, and extra spaces within a string.
+        """
+        try:
+            return " ".join(text.split())
+        except Exception as e:
+            print(f"Exception encountered while preprocess_strings - {e}")
+            return text
+            
     def _get_text(selector):
         try:
-            return soup.select_one(selector).get_text(strip=True)
+            return preprocess_string(soup.select_one(selector).get_text(strip=True))
         except AttributeError:
             return "N/A"
 
@@ -70,11 +79,13 @@ def scrape(session, url):
             if desc_html:
                 # Clean the HTML tags from the description
                 desc_soup = BeautifulSoup(desc_html, 'lxml')
-                return desc_soup.get_text(separator='\n').strip()
+                text = desc_soup.get_text(separator='\n').strip()
+                return preprocess_string(text)
         except (KeyError, TypeError) as e:
             logging.warning(f"Could not find description in JSON data: {e}")
         
         # Fallback to searching common HTML selectors if JSON fails
+        # text = 
         return _get_text('div.about-item-description') or _get_text('div[itemprop="description"]')
 
     # --- Scrape Data ---
@@ -84,6 +95,7 @@ def scrape(session, url):
     product_data = {
         'site': 'Walmart',
         'title': _get_text('h1[itemprop="name"]'),
+        'about': '',
         'price': _get_price(),
         'rating': _get_text('span.average-rating'),
         'number_of_reviews': _get_text('span.hidden-mobile.sub-title').split(' ')[0],
