@@ -25,6 +25,13 @@
 - FFmpeg to stitch the audio and video together to get the final video output.
 - Other common libraries used include ones like morgan, cors, dotenv, etc that are part of most servers.
 
+## .env file
+
+- Create a file called `.env` at the root folder
+- The following need to be added to the file:
+  - PORT : The port number that the backend runs on. Keep this as `8080` for smooth functionality.
+  - OPENAI_API_KEY : OpenAI API key for generating the prompts and TTS services.
+
 ## Conclusion
 
 After a lot of thinking, I went with this approach of using Python for low-level interactivity with data, and Express for the high level web server as I felt it provided the best of both worlds. Having to use only Fast API or only Express came with challenges of their own which are mitigated with this approach. Also this allowed me to flex my thinking muscles and come up with solutions that are out of the norm but still perform extremely well. The average time to generate a video was anywhere between 25 and 45 seconds which is pretty good considering all the tasks are happening on local machine that does not have the computational capabilities as a full blown server.
